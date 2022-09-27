@@ -5,13 +5,22 @@ import Orders from '../../components/Orders/Orders';
 import OrderForm from '../../components/OrderForm/OrderForm';
 
 class App extends Component {
-  constructor(props) {
+  constructor() {
     super();
+    this.state = {
+      orders: []
+    }
   }
 
   componentDidMount() {
+    console.log(this.state.orders)
     getOrders()
+      .then(data => this.setState({orders: [data]}))
       .catch(err => console.error('Error fetching:', err));
+  }
+
+  setOrders = (data) => {
+    this.setState({orders: [...this.state.orders, data]})
   }
 
   render() {
@@ -19,9 +28,8 @@ class App extends Component {
       <main className="App">
         <header>
           <h1>Burrito Builder</h1>
-          <OrderForm />
+          <OrderForm setOrders={this.setOrders}/>
         </header>
-
         <Orders orders={this.state.orders}/>
       </main>
     );
@@ -30,3 +38,6 @@ class App extends Component {
 
 
 export default App;
+
+//orders equal to data and not a react component
+//keep conditional rendering in mind
