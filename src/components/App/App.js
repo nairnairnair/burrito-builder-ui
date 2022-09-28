@@ -13,14 +13,22 @@ class App extends Component {
   }
 
   componentDidMount() {
-    console.log(this.state.orders)
     getOrders()
-      .then(data => this.setState({orders: [data]}))
-      .catch(err => console.error('Error fetching:', err));
+      .then(data => this.setState({orders: data.orders}))
+      .catch(err => console.error('fetch error:', err));
   }
 
-  setOrders = (data) => {
-    this.setState({orders: [...this.state.orders, data]})
+  postOrder = (currentOrder) => {
+    fetch('http://localhost:3001/api/v1/orders', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(currentOrder)
+    })
+    .then(rsp => rsp.json())
+    .then(data => this.setState({orders: [...this.state.orders, data]}))
+    .catch(err => console.log('post err:', err))
   }
 
   render() {
@@ -28,7 +36,7 @@ class App extends Component {
       <main className="App">
         <header>
           <h1>Burrito Builder</h1>
-          <OrderForm setOrders={this.setOrders}/>
+          <OrderForm postOrder={this.postOrder}/>
         </header>
         <Orders orders={this.state.orders}/>
       </main>

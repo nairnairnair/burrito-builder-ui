@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 class OrderForm extends Component {
   constructor(props) {
     super();
-    this.props = props;
+    // this.props = props;
     this.state = {
       name: '',
       ingredients: []
@@ -16,27 +16,15 @@ class OrderForm extends Component {
 
   handleIngredientChange = (e) => {
     e.preventDefault()
-    console.log('eeee', e.target.name)
     this.setState({ingredients: [...this.state.ingredients, e.target.name]})
   }
 
   handleSubmit = (e) => {
     e.preventDefault();
-    this.postOrder(this.state)
+    if (this.state.name && this.state.ingredients.length){
+      const currentOrder = {...this.state}
+      this.props.postOrder(currentOrder)}
     this.clearInputs();
-  }
-
-  postOrder = (order) => {
-    fetch('http://localhost:3001/api/v1/orders', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(order)
-    })
-    .then(rsp => rsp.json())
-    .then(data => this.props.setOrders(data))
-    .catch(err => console.log(err))
   }
 
   clearInputs = () => {
